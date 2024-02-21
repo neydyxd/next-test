@@ -1,5 +1,6 @@
 import Link from "next/link";
 import styles from "../styles.module.css";
+import Navigation from "../components/Navigation/Navigation";
 
 interface IData {
   title: string;
@@ -13,20 +14,23 @@ interface Props {
 
 export default function Home({ serverData, serverMap }: Props) {
   return (
-    <div className={styles.about__container}>
-      <nav>
-        <Link className={styles.about__link} href="/sign-in">
-          Войти
-        </Link>
-      </nav>
-      <h1>{serverData.title}</h1>
-      <p>{serverData.text}</p>
-      <h2>Список</h2>
-      <ul>
-        {serverMap.map((item: string) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
+    <div className={styles.main__container}>
+      <Navigation />
+      <div className={styles.about__container}>
+        <nav>
+          <Link className={styles.about__link} href="/sign-in">
+            Войти
+          </Link>
+        </nav>
+        <h1>{serverData.title}</h1>
+        <p>{serverData.text}</p>
+        <h2>Список</h2>
+        <ul>
+          {serverMap.map((item: string) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
