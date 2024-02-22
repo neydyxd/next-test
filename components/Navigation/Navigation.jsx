@@ -4,29 +4,27 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 const Navigation = () => {
-  const [isMenuOpen, setMenuOpen] = useState(() => {
-    let initialValue = false;
-    if (typeof sessionStorage !== "undefined") {
-      const storedValue = sessionStorage.getItem("menuOpen");
-      initialValue = storedValue ? JSON.parse(storedValue) : false;
-    }
-    return initialValue;
-  });
+  const [isMenuOpen, setMenuOpen] = useState(false);
   const [selectedMenuItem, setSelectedMenuItem] = useState("/");
   const router = useRouter();
   const currentRout = router.asPath;
 
-  const toggleSubMenu = () => {
-    setMenuOpen(!isMenuOpen);
-  };
-
   useEffect(() => {
+    const storedValue = sessionStorage.getItem("menuOpen");
+    if (storedValue) {
+      setMenuOpen(JSON.parse(storedValue));
+    }
+
     if (currentRout === "/about") {
       setSelectedMenuItem("/about");
     } else {
       setSelectedMenuItem("/");
     }
-  }, [selectedMenuItem, currentRout]);
+  }, [currentRout]);
+
+  const toggleSubMenu = () => {
+    setMenuOpen(!isMenuOpen);
+  };
 
   useEffect(() => {
     sessionStorage.setItem("menuOpen", JSON.stringify(isMenuOpen));
@@ -44,11 +42,7 @@ const Navigation = () => {
         <ul className={styles.menu__list}>
           <li className={styles.menu__item}>
             <Link
-              className={
-                selectedMenuItem === "/"
-                  ? styles.menu__item_active
-                  : styles.menu__item
-              }
+              className={selectedMenuItem === "/" ? styles.menu__item_active : styles.menu__item}
               href="/"
             >
               Главная
@@ -56,11 +50,7 @@ const Navigation = () => {
           </li>
           <li className={styles.menu__item}>
             <Link
-              className={
-                selectedMenuItem === "/about"
-                  ? styles.menu__item_active
-                  : styles.menu__item
-              }
+              className={selectedMenuItem === "/about" ? styles.menu__item_active : styles.menu__item}
               href="/about"
             >
               О нас
