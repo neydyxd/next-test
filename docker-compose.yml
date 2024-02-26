@@ -1,0 +1,17 @@
+
+version: "3"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: frontend 
+    restart: always
+    volumes:
+      - ./:/app
+      - /app/node_modules
+      - /app/.next
+    read_only: false
+    ports:
+      - 3000:3000
