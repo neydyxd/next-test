@@ -2,9 +2,10 @@ import Link from "next/link";
 import styles from "../../styles.module.css";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useMenu } from "../../context/MenuContext"
 
 const Navigation = () => {
-  const [isMenuOpen, setMenuOpen] = useState(false);
+  const { isMenuOpen, setMenuOpen } = useMenu();
   const [selectedMenuItem, setSelectedMenuItem] = useState("/");
   const router = useRouter();
   const currentRout = router.asPath;
@@ -33,7 +34,7 @@ const Navigation = () => {
   return (
     <div className={styles.menu__container}>
       <button
-        className={!isMenuOpen ? styles.menu__button : styles.menu__button_open}
+        className={isMenuOpen ? styles.menu__button_open : styles.menu__button}
         onClick={toggleSubMenu}
       >
         <span className={styles.menu__arrow}>&#62;</span>
