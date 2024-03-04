@@ -2,20 +2,22 @@ import Link from "next/link";
 import styles from "../../styles.module.css";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useMenu } from "../../context/MenuContext"
 
 const Navigation = () => {
-  const { isMenuOpen, setMenuOpen } = useMenu();
+  const [isMenuOpen, setMenuOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedValue = sessionStorage.getItem("menuOpen");
+      return savedValue ? JSON.parse(savedValue) : false;
+    }
+    return false;
+  });
+
   const [selectedMenuItem, setSelectedMenuItem] = useState("/");
   const router = useRouter();
   const currentRout = router.asPath;
+  const [isComponentVisible, setComponentVisible] = useState(false);
 
   useEffect(() => {
-    const storedValue = sessionStorage.getItem("menuOpen");
-    if (storedValue) {
-      setMenuOpen(JSON.parse(storedValue));
-    }
-
     if (currentRout === "/about") {
       setSelectedMenuItem("/about");
     } else {
@@ -24,22 +26,28 @@ const Navigation = () => {
   }, [currentRout]);
 
   const toggleSubMenu = () => {
-    setMenuOpen(!isMenuOpen);
+    setMenuOpen((prevState) => {
+      const newState = !prevState;
+      sessionStorage.setItem("menuOpen", JSON.stringify(newState));
+      return newState;
+    });
   };
 
   useEffect(() => {
-    sessionStorage.setItem("menuOpen", JSON.stringify(isMenuOpen));
+    setComponentVisible(true);
   }, [isMenuOpen]);
 
   return (
     <div className={styles.menu__container}>
-      <button
-        className={isMenuOpen ? styles.menu__button_open : styles.menu__button}
-        onClick={toggleSubMenu}
-      >
-        <span className={styles.menu__arrow}>&#62;</span>
-      </button>
-      {isMenuOpen && (
+      {isComponentVisible && (
+        <button
+          className={isMenuOpen ? styles.menu__button_open : styles.menu__button}
+          onClick={toggleSubMenu}
+        >
+          <span className={styles.menu__arrow}>&#62;</span>
+        </button>
+      )}
+      {isComponentVisible && isMenuOpen && (
         <ul className={styles.menu__list}>
           <li className={styles.menu__item}>
             <Link
